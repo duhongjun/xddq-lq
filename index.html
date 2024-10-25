@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>炼器辅助工具fmvp 天榜</title>
+
+    <link rel="stylesheet" href="vendor/2048.min.css" />
+    <link rel="stylesheet" href="ai.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <script type="module" src="main.js"></script>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta
+      name="viewport"
+      content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <script>
+      let eleven = 0;
+      let dir_text = ["上", "右", "下", "左"];
+      let set = false;
+      let last = JSON.parse(localStorage["gameState"]);
+
+      function getGrid(dir) {
+        let json = JSON.parse(localStorage["gameState"]);
+        let cell = json.grid.cells;
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 4; j++) {
+            if (cell[i][j] != null) {
+              let val = Math.log2(cell[i][j].value);
+              if (val > 11) val = 11;
+              document.getElementById(`grid_${j}_${i}`).value = val;
+              document.getElementById(
+                `grid_${j}_${i}`
+              ).style.backgroundImage = `url(./img/${val}.png)`;
+            } else {
+              document.getElementById(`grid_${j}_${i}`).value = "";
+              document.getElementById(
+                `grid_${j}_${i}`
+              ).style.backgroundImage = ``;
+            }
+          }
+        }
+
+        if (dir != undefined) {
+          console.log(dir);
+          document.getElementById("dir").innerHTML = dir_text[dir];
+        }
+      }
+
+      function setGrid(a) {
+        if (a != undefined) console.log("change");
+        let data = {
+          grid: {
+            size: 4,
+            cells: [
+              [null, null, null, null],
+              [null, null, null, null],
+              [null, null, null, null],
+              [null, null, null, null],
+            ],
+          },
+          score: 0,
+          over: false,
+          won: false,
+          keepPlaying: false,
+        };
+
+        let eleven = 13;
+        for (let x = 0; x < 4; x++) {
+          for (let y = 0; y < 4; y++) {
+            let d = document.getElementById(`grid_${x}_${y}`).value;
+
+            if (d > 0) {
+              if (d == 11) {
+                d = eleven++;
+              }
+              data.grid.cells[y][x] = {
+                position: { x: y, y: x },
+                value: Math.pow(2, d),
+              };
+            }
+          }
+        }
+        localStorage["gameState"] = JSON.stringify(data);
+        game.setup();
+      }
+
+      function change(x, y) {}
+
+      function clear1() {
+        console.log("clear");
+        let data = {
+          grid: {
+            size: 4,
+            cells: [
+              [null, null, null, null],
+              [null, null, null, null],
+              [null, null, null, null],
+              [null, null, null, null],
+            ],
+          },
+          score: 0,
+          over: false,
+          won: false,
+          keepPlaying: false,
+        };
+        localStorage["gameState"] = JSON.stringify(data);
+        getGrid();
+      }
+
+      function back1() {}
+    </script>
+
+    <style>
+      body {
+        padding: 5px;
+      }
+      input {
+        width: 22vw;
+        height: 22vw;
+        max-width: 100px;
+        max-height: 100px;
+        text-align: right;
+        font-size: 14px;
+        background-color: rgb(61, 130, 153);
+        background-size: 100% 100%;
+        padding-left: 0px;
+        padding-right: 2px;
+        margin-left: 0px;
+        margin-top: 3px;
+        border: 0 solid;
+      }
+
+      #grid {
+        width: 100%;
+
+        margin: 0px;
+        padding: 0px;
+        min-width: 360px;
+      }
+    </style>
+  </head>
+
+  <body>
+    fmvp 天榜 炼器AI辅助工具v1.1，仅供内部学习参考<br />
+    使用方法：点击格子右侧+1，左侧-1，设置成跟实际情况一样后点“走一步”评估最优解<br />
+    完事后把随机出来的位置再次设置好，以此类推<br />
+    由于新的格子具有随机性，不能保证100%完全过关<br />
+    祝大家都能拿到大斧头<br />
+    此工具由
+    <span style="color: red">福禄山 fmvp天榜</span> 免费提供，仅供娱乐<br />
+    <div id="grid">
+      <button onclick="clear1()">全部清空</button>
+      <button id="ai-step">走一步</button> 最优移动方向：<span id="dir"></span
+      ><br />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_0_0"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_0_1"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_0_2"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_0_3"
+        onchange="setGrid()"
+      /><br />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_1_0"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_1_1"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_1_2"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_1_3"
+        onchange="setGrid()"
+      /><br />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_2_0"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_2_1"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_2_2"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_2_3"
+        onchange="setGrid()"
+      /><br />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_3_0"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_3_1"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_3_2"
+        onchange="setGrid()"
+      />
+      <input
+        class="cell"
+        readonly
+        oncontextmenu="return false"
+        id="grid_3_3"
+        onchange="setGrid()"
+      />
+    </div>
+
+    <div class="container" style="display: none">
+      <div class="game-container">
+        <div class="grid-container">
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+        </div>
+
+        <div class="tile-container"></div>
+      </div>
+    </div>
+
+    <script>
+      let cells = document.getElementsByClassName("cell");
+      for (let i = 0; i < cells.length; i++) {
+        cells[i].addEventListener("mousedown", (e) => {
+          //console.log(e);
+          let val = cells[i].value;
+          if (val == "") val = 0;
+          //srcElement
+          if (e.offsetX > e.srcElement.offsetWidth / 2) {
+            val++;
+          } else {
+            val--;
+          }
+
+          if (val <= 0) val = "";
+          if (val > 11) {
+            console.log(val);
+            val = 11;
+          }
+          cells[i].value = val;
+          if (val != "") {
+            cells[i].style.backgroundImage = `url(./img/${val}.png)`;
+          } else {
+            cells[i].style.backgroundImage = ``;
+          }
+          setGrid();
+        });
+      }
+
+      getGrid();
+    </script>
+  </body>
+</html>
