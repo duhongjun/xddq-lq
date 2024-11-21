@@ -43,7 +43,6 @@
         }
 
         if (dir != undefined) {
-          console.log(dir);
           document.getElementById("dir").innerHTML = dir_text[dir];
         }
       }
@@ -139,6 +138,13 @@
         padding: 0px;
         min-width: 360px;
       }
+      .direction {
+
+      }
+      #dir {
+        font-weight: bold;
+        color: red;
+      }
     </style>
   </head>
 
@@ -149,11 +155,12 @@
     由于新的格子具有随机性，不能保证100%完全过关<br />
     祝大家都能拿到大斧头<br />
     此工具由
-    <span style="color: red">尧光山  足疗</span> 免费提供，仅供娱乐<br />
+    <span style="color: red; font-weight: bold;">尧光山  足疗</span> 免费提供，仅供娱乐<br />
     <div id="grid">
       <button onclick="clear1()">全部清空</button>
-      <button id="ai-step">走一步</button> 最优移动方向：<span id="dir"></span
-      ><br />
+      <button id="ai-step">走一步</button>
+      <div class="direction">最优移动方向：<span id="dir"></span></div>
+       <br />
       <input
         class="cell"
         readonly
